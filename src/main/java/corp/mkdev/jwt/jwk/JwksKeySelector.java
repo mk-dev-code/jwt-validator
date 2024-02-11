@@ -1,4 +1,4 @@
-package corp.mkdev.jwt.validator;
+package corp.mkdev.jwt.jwk;
 
 import java.security.Key;
 import java.util.Collections;

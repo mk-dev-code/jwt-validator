@@ -1,4 +1,4 @@
-package corp.mkdev.jwt.validator;
+package corp.mkdev.jwt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

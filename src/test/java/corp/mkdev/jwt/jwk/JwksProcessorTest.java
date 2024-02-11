@@ -1,4 +1,4 @@
-package corp.mkdev.jwt.validator;
+package corp.mkdev.jwt.jwk;
 
 import static net.jadler.Jadler.closeJadler;
 import static net.jadler.Jadler.initJadler;
@@ -38,7 +38,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.OctetKeyPairGenerator;
 import com.nimbusds.jose.proc.SecurityContext;
 
-public class JwksUtilsTest {
+public class JwksProcessorTest {
 
     private static final SecurityContext ctx = null;
 
@@ -77,7 +77,6 @@ public class JwksUtilsTest {
         final JWKSet jwkSet = new JWKSet(Arrays.asList(jwkEdDSA.toPublicJWK(),jwkRSA.toPublicJWK()));
 
         jwkSetURL = new URL("http://localhost:" + port() + "/jwks.json");
-        System.out.println(jwkSet.toJSONObject(true).toString());
         onRequest()
         .havingMethodEqualTo("GET")
         .havingPathEqualTo("/jwks.json")
@@ -94,41 +93,41 @@ public class JwksUtilsTest {
     }
 
     @Test
-    public void testJwksUtilsConstruction() {
+    public void testJwksProcessorConstruction() {
         try {
-            final JwksUtils jwksUtils = new JwksUtils(jwkSetURL);
-            assertNotNull(jwksUtils.getKeySelector());
+            final JwksProcessor jwksProcessor = new JwksProcessor(jwkSetURL);
+            assertNotNull(jwksProcessor.getKeySelector());
         } catch (final Exception e) {
             fail("Exception: " + e.getMessage());
         }
     }
 
     @Test
-    public void testJwksUtilsConstructionWithInvalidUrl() {
-        assertThrows(MalformedURLException.class, () -> new JwksUtils("invalid url"));
+    public void testJwksProcessorConstructionWithInvalidUrl() {
+        assertThrows(MalformedURLException.class, () -> new JwksProcessor("invalid url"));
     }
 
     @Test
-    public void testJwksUtilsAlgEdDSA() throws Exception {
-        final JwksUtils jwksUtils = new JwksUtils(jwkSetURL);
-        assertTrue(jwksUtils.getKeySelector().isAllowed(JWSAlgorithm.EdDSA));
+    public void testJwksProcessorAlgEdDSA() throws Exception {
+        final JwksProcessor jwksProcessor = new JwksProcessor(jwkSetURL);
+        assertTrue(jwksProcessor.getKeySelector().isAllowed(JWSAlgorithm.EdDSA));
     }
 
     @Test
-    public void testJwksUtilsAlgRS256() throws Exception {
-        final JwksUtils jwksUtils = new JwksUtils(jwkSetURL);
-        assertTrue(jwksUtils.getKeySelector().isAllowed(JWSAlgorithm.RS256));
+    public void testJwksProcessorAlgRS256() throws Exception {
+        final JwksProcessor jwksProcessor = new JwksProcessor(jwkSetURL);
+        assertTrue(jwksProcessor.getKeySelector().isAllowed(JWSAlgorithm.RS256));
     }
 
     @Test
-    public void testJwksUtilsCheckEdDSA() throws Exception {
-        final JwksUtils jwksUtils = new JwksUtils(jwkSetURL);
-        assertNotNull(jwksUtils.getKeySelector());
+    public void testJwksProcessorCheckEdDSA() throws Exception {
+        final JwksProcessor jwksProcessor = new JwksProcessor(jwkSetURL);
+        assertNotNull(jwksProcessor.getKeySelector());
 
         final JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(kidEdDSA).build();
         List<JWK> keyList=null;
         try {
-            keyList =jwksUtils.getKeySelector().selectJWSJWK(jwsHeader);
+            keyList =jwksProcessor.getKeySelector().selectJWSJWK(jwsHeader);
         } catch (final Exception e) {
             fail("Exception: " + e.getMessage());
             return;
@@ -149,16 +148,16 @@ public class JwksUtilsTest {
     }
 
     @Test
-    public void testJwksUtilsCheckRSA() throws Exception {
+    public void testJwksProcessorCheckRSA() throws Exception {
 
-        final JwksUtils jwksUtils = new JwksUtils(jwkSetURL);
-        assertNotNull(jwksUtils.getKeySelector());
+        final JwksProcessor jwksProcessor = new JwksProcessor(jwkSetURL);
+        assertNotNull(jwksProcessor.getKeySelector());
 
         final JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(kidRSA).build();
 
         List<Key> keyList=null;
         try {
-            keyList =jwksUtils.getKeySelector().selectJWSKeys(jwsHeader, ctx);
+            keyList =jwksProcessor.getKeySelector().selectJWSKeys(jwsHeader, ctx);
         } catch (final Exception e) {
             fail("Exception: " + e.getMessage());
             return;
