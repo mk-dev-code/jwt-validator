@@ -1,9 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>corp.taskn</groupId>
-	<artifactId>jwt-validtor</artifactId>
+	<groupId>corp.mkdev</groupId>
+	<artifactId>jwt-validator</artifactId>
 	<version>1.0.0</version>
 	<description>JWT Token Validation Library with Spring Security Integration</description>
+  	<url>https://github.com/mk-dev-code/JWTValidator</url>
   
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -11,8 +12,74 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <checkstyle.plugin.version>3.3.1</checkstyle.plugin.version>
+        <slf4j.version>2.0.12</slf4j.version>
     </properties>
   
+	<scm>
+		<connection>scm:git:https://github.com/mk-dev-code/JWTValidator</connection>
+		<url>https://github.com/mk-dev-code/JWTValidator</url>
+	</scm>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.10.2</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+    <dependencies>
+		<dependency>
+			<groupId>com.google.crypto.tink</groupId>
+			<artifactId>tink</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+    	<dependency>
+			<groupId>com.nimbusds</groupId>
+  			<artifactId>nimbus-jose-jwt</artifactId>
+  			<version>9.31</version>
+		</dependency>
+        <dependency>
+            <groupId>net.jadler</groupId>
+            <artifactId>jadler-all</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>	
+
+		<!--
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${slf4j.version}</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <version>${slf4j.version}</version>
+		    <scope>test</scope>
+		</dependency>
+	-->					
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		    <version>3.2.2</version>
+		    <scope>test</scope>
+		</dependency>
+	</dependencies>
+	
     <build>
 		<plugins>
 			<plugin>
@@ -26,7 +93,21 @@
 					<failsOnError>true</failsOnError>
 					<linkXRef>false</linkXRef>			     
 				</configuration>
-			</plugin>
+                <executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>			
+			</plugin>			
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <version>3.2.5</version>
+	        </plugin>
 		</plugins>
 	</build>
   

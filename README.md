@@ -11,7 +11,7 @@
 
 ### Scenario
 
-In a distributed system of microservices, thers is a mechanism that attaches a JWT token to each HTTP request. 
+In a distributed system of microservices, there is a mechanism that attaches a JWT token to each HTTP request. 
 To ensure secure communication between these services, a robust validation system for these tokens is needed.
 The task is to create a library that enables microservices to:
 1. Validate these JWT tokens,
@@ -31,14 +31,14 @@ explaining how to enable and configure the library
 1. The token is stored in x-secret-token header
 2. The token is a standard base64 encoded signed JWT
 3. The library is intended for clients with limited knowledge of web security, so they
-should be able to use your library with as little security details as possible
+should be able to use the library with as little security details as possible
 4. Optional but recommended: make it work when the signing algorithm is EdDSA
 
 ## Implementation
 TODO
 
 ### Testing  
-Tests are located in the ```test``` directory with package definitions matching those of the classes under test. There are two types of tests ```Happy``` and ```Negative``` and are separated in different testing classes.  
+Tests are located in the ```test``` directory with package definitions matching those of the classes under test.
 
 ### Linter
 [Checkstyle](https://checkstyle.org) is configured and used as a linting tool.  
@@ -49,6 +49,6 @@ Tests are located in the ```test``` directory with package definitions matching 
 ### Project setup    
 1. Clone repository  
     ```
-    git clone https://github.com/TaskN/JWTValidator JWTValidator
+    git clone https://github.com/mk-dev-code/jwt-validator jwt-validator
     ```  
    
