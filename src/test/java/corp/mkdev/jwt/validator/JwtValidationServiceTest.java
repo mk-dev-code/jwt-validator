@@ -118,7 +118,7 @@ public class JwtValidationServiceTest {
         assertNotNull(signedJWT.getSignature());
         assertTrue(sigInput.equals(Base64URL.encode(signedJWT.getSigningInput())));
 
-        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
+        final JwtValidationService jwtValidator=JwtValidationServiceFactory.build(jwkSetURL);
 
         final JwtValidationToken jwtValidationToken = jwtValidator.validate(serializedJWT);
         assertEquals(subject, jwtValidationToken.getSubject());
@@ -146,7 +146,7 @@ public class JwtValidationServiceTest {
             .generate());
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
+        final JwtValidationService jwtValidator=JwtValidationServiceFactory.build(jwkSetURL);
         assertThrows(JwtValidationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 
@@ -167,7 +167,7 @@ public class JwtValidationServiceTest {
         final JWSSigner signer = new Ed25519Signer(jwkEdDSA);
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
+        final JwtValidationService jwtValidator=JwtValidationServiceFactory.build(jwkSetURL);
         assertThrows(JwtValidationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 
@@ -194,7 +194,7 @@ public class JwtValidationServiceTest {
             .generate());
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
+        final JwtValidationService jwtValidator=JwtValidationServiceFactory.build(jwkSetURL);
         assertThrows(JwtOperationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 }

@@ -38,8 +38,23 @@ public class JwtValidationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public Object getCredentials() {
+    public boolean isAuthenticated() {
+        return (getSubject() != null);
+    }
+
+    @Override
+    public String getName() {
         return getSubject();
+    }
+
+    @Override
+    public Object getCredentials() {
+        return getClaims();
+    }
+
+    @Override
+    public Object getDetails() {
+        return getClaims();
     }
 
     @Override

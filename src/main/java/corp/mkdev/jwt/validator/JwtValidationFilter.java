@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import jakarta.servlet.FilterChain;
@@ -13,23 +12,41 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtValidationFilter extends OncePerRequestFilter {
 
-    private static final Log LOG = LogFactory.getLog(JwtFilter.class);
+    private static final Log LOG = LogFactory.getLog(JwtValidationFilter.class);
 
-    private final JwtValidationService jwtValidator;
+    private final String httpHeader;
 
-    public JwtFilter(final JwtValidationService jwtValidator) {
+    private final JwtValidationService jwtValidatorService;
+
+    public JwtValidationFilter(final String httpHeader, final JwtValidationService jwtValidatorService) {
         super();
-        this.jwtValidator = jwtValidator;
+        if (httpHeader == null || httpHeader.length() == 0) {
+            throw new IllegalArgumentException("Invalid header");
+        }
+        if (jwtValidatorService == null) {
+            throw new IllegalArgumentException("Invalid Validator Service");
+        }
+        this.httpHeader = httpHeader;
+        this.jwtValidatorService = jwtValidatorService;
+        LOG.info("Starting JwtValidationFilter with [HttpHeader:" + httpHeader + "] [JwtValidator:" + jwtValidatorService + "]");
     }
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
             throws ServletException, IOException {
+        if (request == null) {
+            chain.doFilter(request, response);
+            return;
+        }
+        final String jwt = request.getHeader(getHttpHeader());
+        if (jwt == null || jwt.length() == 0) {
+            chain.doFilter(request, response);
+            return;
+        }
         try {
-            final JwtValidationToken validationToken = jwtValidator.validate(request);
+            final JwtValidationToken validationToken = jwtValidatorService.validate(jwt);
             SecurityContextHolder.getContext().setAuthentication(validationToken);
             chain.doFilter(request, response);
             return;
@@ -43,4 +60,9 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
     }
+
+    public String getHttpHeader() {
+        return httpHeader;
+    }
+
 }

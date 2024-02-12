@@ -19,62 +19,19 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 
 import corp.mkdev.jwt.jwk.JwksProcessor;
-import jakarta.servlet.http.HttpServletRequest;
 
 public class JwtValidationService {
-
-    private final String defaultHttpHeader;
 
     private final JwksProcessor jwksProcessor;
 
     private final DefaultJWSVerifierFactory jwsVerifierFactory = new DefaultJWSVerifierFactory();
 
-    public JwtValidationService(final String keyServerUrl) throws Exception {
-        this(keyServerUrl, null);
-    }
-
-    public JwtValidationService(final URL keyServerUrl) throws Exception {
-        this(keyServerUrl, null);
-    }
-
-    public JwtValidationService(final String keyServerUrl, final String algs) throws Exception {
-        this(null, keyServerUrl, algs);
-    }
-
     public JwtValidationService(final URL keyServerUrl, final String algs) throws Exception {
-        this(null, keyServerUrl, algs);
-    }
-
-    public JwtValidationService(final String defaultHttpHeader, final String keyServerUrl,
-            final String algs) throws Exception {
-        this(defaultHttpHeader, new URL(keyServerUrl), algs);
-    }
-
-    public JwtValidationService(final String defaultHttpHeader, final URL keyServerUrl, final String algs) throws Exception {
-        if (defaultHttpHeader == null || defaultHttpHeader.length() == 0) {
-            this.defaultHttpHeader = "x-secret-token";
-        } else {
-            this.defaultHttpHeader = defaultHttpHeader;
-        }
         if (algs == null) {
             this.jwksProcessor = new JwksProcessor(keyServerUrl);
         } else {
             this.jwksProcessor = new JwksProcessor(keyServerUrl, algs);
         }
-    }
-
-    public JwtValidationToken validate(final HttpServletRequest httpRequest) throws Exception {
-        return validate(getDefaultHttpHeader(), httpRequest);
-    }
-
-    public JwtValidationToken validate(final String header, final HttpServletRequest httpRequest) throws Exception {
-        if (header == null || header.length() == 0) {
-            throw new IllegalArgumentException("Invalid header");
-        }
-        if (httpRequest == null) {
-            throw new IllegalArgumentException("Invalid HttpRequest");
-        }
-        return validate(httpRequest.getHeader(header));
     }
 
     public JwtValidationToken validate(final String token) throws Exception {
@@ -149,13 +106,8 @@ public class JwtValidationService {
         throw new JwtValidationException("Signing key not found");
     }
 
-    public String getDefaultHttpHeader() {
-        return defaultHttpHeader;
-    }
-
     protected JwksProcessor getJwksProcessor() {
         return jwksProcessor;
     }
-
 }
 
