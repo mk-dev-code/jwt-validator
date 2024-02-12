@@ -64,10 +64,13 @@ Tests are located in the ```test``` directory with package definitions matching 
 - ```mvn checkstyle:checkstyle``` runs checkstyle
 
 ## Installation    
+
 1. Clone repository  
     `git clone https://github.com/mk-dev-code/jwt-validator jwt-validator`
+
 2. Build	
 	`mvn clean install`
+
 3. Add dependecy 
 ```xml						
 		<dependency>
@@ -77,17 +80,16 @@ Tests are located in the ```test``` directory with package definitions matching 
 		</dependency>
 ```
 ## Integration
-1. In Spring Boot:  
-   1.1. Enable web security by annotating a class with `@EnableWebSecurity`.  
-   1.2. Create a `JwtValidationFilter`. If autowired, ensure that a bean providing `JwtValidationFilter` is available elsewhere. Alternatively, allow component scanning using `@ComponentScan(basePackages = {"corp.mkdev.jwt.validator"})` to make `JwtValidationFilterConfig` visible. 
+In Spring Boot:  
 
+1. Enable web security by annotating a class with `@EnableWebSecurity`.  
+
+2. Create a `JwtValidationFilter`. If autowired, ensure that a bean providing `JwtValidationFilter` is available elsewhere. Alternatively, allow component scanning using `@ComponentScan(basePackages = {"corp.mkdev.jwt.validator"})` to make `JwtValidationFilterConfig` visible.   
 ```java
     @Autowired
     private JwtValidationFilter jwtValidationFilter
 ```
-
 JwtValidationFilterConfig expects `jwt.validation.jks.url`, `jwt.validation.header` and `jwt.validation.algs`. Ensure these are set in `application. properties` file
-
 ```properties
 #Key server url
 jwt.validation.jks.url=http://127.0.0.1:8080/jwks.json
@@ -99,7 +101,7 @@ jwt.validation.header=x-secret-token
 jwt.validation.algs=EdDSA,RS256
 ```
   
-1.3. Create a filter chain and add JwtValidationFilter before UsernamePasswordAuthenticationFilter.  
+3. Create a filter chain and add JwtValidationFilter before UsernamePasswordAuthenticationFilter. This sample configuration requires all requests to `/auth/` to have a valid JWT set in respective HTTP header.
 ```java
     @Bean
     SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -115,15 +117,12 @@ jwt.validation.algs=EdDSA,RS256
         return http.build();
     }
 ```
-1.4. On successfull token verification Authentication is set to JwtValidationToken, and the JWT subject is accessible via `getName()` and claims are accessible via `getDetails()` methods.
+
+4. On successfull token verification Authentication is set to JwtValidationToken, and the JWT subject is accessible via `getName()` and claims are accessible via `getDetails()` methods.  
 ```java
     @GetMapping(path = { "/auth/ping" })
     public String authPing(Authentication authentication) {
         return "Subject:("+authentication.getName()+") Claims:" + authentication.getDetails();
     }
 ```
-
-
-
-
 
