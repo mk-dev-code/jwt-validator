@@ -69,10 +69,15 @@ Tests are located in the ```test``` directory with package definitions matching 
 1. Clone repository  
     `git clone https://github.com/mk-dev-code/jwt-validator jwt-validator`
 
-2. Build	
+2. Build
 	`mvn clean install`
 
-3. Add dependecy 
+3. Test run example
+	`mvn -f example/pom.xml spring-boot:run`
+
+## Integration
+
+1. Add dependency 
 ```xml						
 		<dependency>
 		    <groupId>corp.mkdev</groupId>
@@ -80,12 +85,9 @@ Tests are located in the ```test``` directory with package definitions matching 
 		    <version>1.0.0</version>
 		</dependency>
 ```
-## Integration
-In Spring Boot:  
+2. Enable web security by annotating a class with `@EnableWebSecurity`.  
 
-1. Enable web security by annotating a class with `@EnableWebSecurity`.  
-
-2. Create a `JwtValidationFilter`. If autowired, ensure that a bean providing `JwtValidationFilter` is available elsewhere. Alternatively, allow component scanning using `@ComponentScan(basePackages = {"corp.mkdev.jwt.validator"})` to make `JwtValidationFilterConfig` visible.   
+3. Create a `JwtValidationFilter`. If autowired, ensure that a bean providing `JwtValidationFilter` is available elsewhere. Alternatively, allow component scanning using `@ComponentScan(basePackages = {"corp.mkdev.jwt.validator"})` to make `JwtValidationFilterConfig` visible.   
 ```java
     @Autowired
     private JwtValidationFilter jwtValidationFilter
@@ -102,7 +104,7 @@ jwt.validation.header=x-secret-token
 jwt.validation.algs=EdDSA,RS256
 ```
   
-3. Create a filter chain and add JwtValidationFilter before UsernamePasswordAuthenticationFilter. This sample configuration requires all requests to `/auth/` to have a valid JWT set in respective HTTP header.
+4. Create a filter chain and add JwtValidationFilter before UsernamePasswordAuthenticationFilter. This sample configuration requires all requests to `/auth/` to have a valid JWT set in respective HTTP header.
 ```java
     @Bean
     SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -119,7 +121,7 @@ jwt.validation.algs=EdDSA,RS256
     }
 ```
 
-4. On successfull token verification Authentication is set to JwtValidationToken, and the JWT subject is accessible via `getName()` and claims are accessible via `getDetails()` methods.  
+5. On successfull token verification Authentication is set to JwtValidationToken, and the JWT subject is accessible via `getName()` and claims are accessible via `getDetails()` methods.  
 ```java
     @GetMapping(path = { "/auth/ping" })
     public String authPing(Authentication authentication) {
