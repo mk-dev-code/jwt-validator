@@ -7,6 +7,7 @@
     * [Testing](#testing)
     * [Linter](#linter)
 - [Installation](#Installation)
+- [Integration](#Integration)
 
 ### Scenario
 
