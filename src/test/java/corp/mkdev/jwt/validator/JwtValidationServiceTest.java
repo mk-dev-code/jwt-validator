@@ -36,7 +36,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class JwtValidatorTest {
+public class JwtValidationServiceTest {
 
     private static final String kid = UUID.randomUUID().toString();
 
@@ -72,13 +72,13 @@ public class JwtValidatorTest {
     }
 
     /**
-     * Test the {@link JwtValidator#validate(String)} method in a happy path scenario.
+     * Test the {@link JwtValidationService#validate(String)} method in a happy path scenario.
      *
-     * <p>This test method verifies that the {@code validate} method of the {@link JwtValidator}
+     * <p>This test method verifies that the {@code validate} method of the {@link JwtValidationService}
      * class behaves correctly when provided with a valid JWT. It covers the successful validation
      * of a JWT, ensuring that the method returns without throwing any exceptions.
-     * @see JwtValidator
-     * @see JwtValidator#validate(String)
+     * @see JwtValidationService
+     * @see JwtValidationService#validate(String)
      */
     @Test
     @Order(1)
@@ -118,7 +118,7 @@ public class JwtValidatorTest {
         assertNotNull(signedJWT.getSignature());
         assertTrue(sigInput.equals(Base64URL.encode(signedJWT.getSigningInput())));
 
-        final JwtValidator jwtValidator=new JwtValidator(jwkSetURL);
+        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
 
         final JwtValidationToken jwtValidationToken = jwtValidator.validate(serializedJWT);
         assertEquals(subject, jwtValidationToken.getSubject());
@@ -146,7 +146,7 @@ public class JwtValidatorTest {
             .generate());
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidator jwtValidator=new JwtValidator(jwkSetURL);
+        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
         assertThrows(JwtValidationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 
@@ -167,7 +167,7 @@ public class JwtValidatorTest {
         final JWSSigner signer = new Ed25519Signer(jwkEdDSA);
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidator jwtValidator=new JwtValidator(jwkSetURL);
+        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
         assertThrows(JwtValidationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 
@@ -194,7 +194,7 @@ public class JwtValidatorTest {
             .generate());
         signedJWT.sign(signer);
         final String serializedJWT = signedJWT.serialize();
-        final JwtValidator jwtValidator=new JwtValidator(jwkSetURL);
+        final JwtValidationService jwtValidator=new JwtValidationService(jwkSetURL);
         assertThrows(JwtOperationException.class, ()-> jwtValidator.validate(serializedJWT));
     }
 }

@@ -4,8 +4,8 @@
 	<artifactId>jwt-validator</artifactId>
 	<version>1.0.0</version>
 	<description>JWT Token Validation Library with Spring Security Integration</description>
-  	<url>https://github.com/mk-dev-code/JWTValidator</url>
-  
+  	<url>https://github.com/mk-dev-code/jwt-validator</url>
+
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
@@ -16,8 +16,8 @@
     </properties>
   
 	<scm>
-		<connection>scm:git:https://github.com/mk-dev-code/JWTValidator</connection>
-		<url>https://github.com/mk-dev-code/JWTValidator</url>
+		<connection>scm:git:https://github.com/mk-dev-code/jwt-validator</connection>
+		<url>https://github.com/mk-dev-code/jwt-validator</url>
 	</scm>
 	
 	<dependencyManagement>
@@ -43,22 +43,20 @@
   			<artifactId>nimbus-jose-jwt</artifactId>
   			<version>9.31</version>
 		</dependency>
-		
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-core</artifactId>
-		    <version>6.2.1</version>
+		    <groupId>jakarta.servlet</groupId>
+		    <artifactId>jakarta.servlet-api</artifactId>
+		    <version>6.1.0-M1</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-web</artifactId>
 		    <version>6.2.1</version>
+		    <scope>provided</scope>
 		</dependency>		
-		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-jwt</artifactId>
-		    <version>1.1.1.RELEASE</version>
-		</dependency>				
+
+		<!-- scope test -->
         <dependency>
             <groupId>net.jadler</groupId>
             <artifactId>jadler-all</artifactId>
@@ -71,28 +69,7 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
-		</dependency>	
-
-		<!--
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>${slf4j.version}</version>
-		    <scope>test</scope>
-		</dependency>
-
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-simple</artifactId>
-		    <version>${slf4j.version}</version>
-		    <scope>test</scope>
-		</dependency>
-	-->					
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		    <version>3.2.2</version>
-		</dependency>
+		</dependency>								
 	</dependencies>
 	
     <build>

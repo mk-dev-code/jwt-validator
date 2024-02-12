@@ -1,11 +1,9 @@
 package corp.mkdev.jwt.validator;
 
 import java.net.URL;
-import java.net.http.HttpRequest;
 import java.security.KeyPair;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -21,10 +19,9 @@ import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 
 import corp.mkdev.jwt.jwk.JwksProcessor;
-import net.jcip.annotations.ThreadSafe;
+import jakarta.servlet.http.HttpServletRequest;
 
-@ThreadSafe
-public class JwtValidator {
+public class JwtValidationService {
 
     private final String defaultHttpHeader;
 
@@ -32,27 +29,28 @@ public class JwtValidator {
 
     private final DefaultJWSVerifierFactory jwsVerifierFactory = new DefaultJWSVerifierFactory();
 
-    public JwtValidator(final String keyServerUrl) throws Exception {
+    public JwtValidationService(final String keyServerUrl) throws Exception {
         this(keyServerUrl, null);
     }
 
-    public JwtValidator(final URL keyServerUrl) throws Exception {
+    public JwtValidationService(final URL keyServerUrl) throws Exception {
         this(keyServerUrl, null);
     }
 
-    public JwtValidator(final String keyServerUrl, final String algs) throws Exception {
+    public JwtValidationService(final String keyServerUrl, final String algs) throws Exception {
         this(null, keyServerUrl, algs);
     }
 
-    public JwtValidator(final URL keyServerUrl, final String algs) throws Exception {
+    public JwtValidationService(final URL keyServerUrl, final String algs) throws Exception {
         this(null, keyServerUrl, algs);
     }
 
-    public JwtValidator(final String defaultHttpHeader, final String keyServerUrl, final String algs) throws Exception {
+    public JwtValidationService(final String defaultHttpHeader, final String keyServerUrl,
+            final String algs) throws Exception {
         this(defaultHttpHeader, new URL(keyServerUrl), algs);
     }
 
-    public JwtValidator(final String defaultHttpHeader, final URL keyServerUrl, final String algs) throws Exception {
+    public JwtValidationService(final String defaultHttpHeader, final URL keyServerUrl, final String algs) throws Exception {
         if (defaultHttpHeader == null || defaultHttpHeader.length() == 0) {
             this.defaultHttpHeader = "x-secret-token";
         } else {
@@ -65,22 +63,18 @@ public class JwtValidator {
         }
     }
 
-    public JwtValidationToken validate(final HttpRequest httpRequest) throws Exception {
+    public JwtValidationToken validate(final HttpServletRequest httpRequest) throws Exception {
         return validate(getDefaultHttpHeader(), httpRequest);
     }
 
-    public JwtValidationToken validate(final String header, final HttpRequest httpRequest) throws Exception {
+    public JwtValidationToken validate(final String header, final HttpServletRequest httpRequest) throws Exception {
         if (header == null || header.length() == 0) {
             throw new IllegalArgumentException("Invalid header");
         }
         if (httpRequest == null) {
             throw new IllegalArgumentException("Invalid HttpRequest");
         }
-        final Optional<String> token = httpRequest.headers().firstValue(header);
-        if (!token.isPresent()) {
-            throw new JwtValidationException("Missing value of header " + header);
-        }
-        return validate(token.get());
+        return validate(httpRequest.getHeader(header));
     }
 
     public JwtValidationToken validate(final String token) throws Exception {

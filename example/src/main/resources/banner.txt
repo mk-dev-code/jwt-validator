@@ -1,0 +1,7 @@
+
+			JWT Validator Example
+			
+          Java Home :: ${java.home}                              
+       Java Version :: ${java.version}
+        Java Vendor :: ${java.vendor}
+     Spring Version :: ${spring-boot.version}

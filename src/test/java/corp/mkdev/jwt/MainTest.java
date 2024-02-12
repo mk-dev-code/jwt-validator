@@ -1,7 +1,7 @@
 package corp.mkdev.jwt;
 
 import corp.mkdev.jwt.jwk.JwksProcessorTest;
-import corp.mkdev.jwt.validator.JwtValidatorTest;
+import corp.mkdev.jwt.validator.JwtValidationServiceTest;
 
 public class MainTest {
 
@@ -10,11 +10,11 @@ public class MainTest {
     }
 
     protected static void testValidator() throws Exception {
-        JwtValidatorTest.setup();
+        JwtValidationServiceTest.setup();
         try {
-            new JwtValidatorTest().testJwtValidatorValidateHappy();
+            new JwtValidationServiceTest().testJwtValidatorValidateHappy();
         }finally {
-            JwtValidatorTest.cleanup();
+            JwtValidationServiceTest.cleanup();
         }
     }
 
